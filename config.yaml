@@ -1,20 +1,13 @@
-wenxuecity:
-    uri: http://www.wenxuecity.com/
-    depth: 1
-    home-page-content:
-        - tag: div
-          class: content
+www.wenxuecity.com:
+    home-page-content-class: content
     article-page-content:
-        - tag: div
-          class: article
+        - class: article
           id: articleContent
-        - tag: div
+        - class: "" 
           id: msgbodyContent
-    article-timestamp:
-        - tag: time
-        - tag: span
-          class: date
-    title-trim: www.wenxuecity.com|- 文学城
+    content-timestamp-tag: span
+    content-timestamp-class: date
+    title-trim: '| www.wenxucity.com'
     filter-patterns:
         - ^/.*/\d+.html
         - ^http://.*.wenxuecity.com/.*/\d+.html
