@@ -1,0 +1,13 @@
+www.wenxuecity.com:
+    home-page-content-class: content
+    article-page-content:
+        - class: article
+          id: articleContent
+        - class: "" 
+          id: msgbodyContent
+    content-timestamp-tag: span
+    content-timestamp-class: date
+    title-trim: '| www.wenxucity.com'
+    filter-patterns:
+        - ^/.*/\d+.html
+        - ^http://.*.wenxuecity.com/.*/\d+.html
