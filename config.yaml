@@ -1,10 +1,25 @@
 wenxuecity:
-    uri: http://www.wenxuecity.com/
+    # general paramters
+    name: wenxuecity
+    root: http://www.wenxuecity.com/
     depth: 1
+    summary-len: 100
+
+    # parameters to parse home page to get article links 
     home-page-content:
         - tag: div
           class: content
-    article-page-content:
+    article-links-filter-patterns:
+        - ^/.*/\d+.html
+        - ^http://.*.wenxuecity.com/.*/\d+.html
+
+    # parameters to parse article content
+    article-content-container:
+        - tag: div
+          class: mainwrapper
+    article-content-title:
+        tag: h3
+    article-content:
         - tag: div
           class: article
           id: articleContent
@@ -22,6 +37,55 @@ wenxuecity:
             tag: "div"
             class: "summary"
     title-trim: www.wenxuecity.com|- 文学城
-    filter-patterns:
-        - ^/.*/\d+.html
-        - ^http://.*.wenxuecity.com/.*/\d+.html
+
+zhihudaily:
+    # general paramters
+    name: zhihudaily
+    root: http://daily.zhihu.com/
+    depth: 1
+    summary-len: 100
+
+    # parameters to parse home page to get article links 
+    home-page-content:
+        - tag: div
+          class: main-content-wrap
+    article-links-filter-patterns:
+        - ^/.*/\d+
+        - ^http://.*.zhihu.com/.*/\d+
+
+    # parameters to parse article content
+    article-content-container:
+        - tag: div
+          class: "main-wrap content-wrap"
+    article-content-title:
+        tag: h1
+        class: headline-title
+    article-content:
+        - tag: div
+          class: question
+              
+jianshu:
+    # general paramters
+    name: jianshu
+    root: http://www.jianshu.com/
+    depth: 1
+    summary-len: 100
+
+    # parameters to parse home page to get article links 
+    home-page-content:
+        - tag: div
+          id: list-container
+    article-links-filter-patterns:
+        - ^/p/\w+\d+
+        - ^http://.*.jianshu.com/.*/\w+\d+
+
+    # parameters to parse article content
+    article-content-container:
+        - tag: div
+          class: "preview"
+    article-content-title:
+        tag: h1
+        class: title
+    article-content:
+        - tag: div
+          class: show-content
