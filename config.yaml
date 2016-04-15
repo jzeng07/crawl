@@ -14,6 +14,13 @@ wenxuecity:
         - tag: time
         - tag: span
           class: date
+    article-comments:
+        user-date:
+            tag: "div"
+            class: "reply"
+        comment:
+            tag: "div"
+            class: "summary"
     title-trim: www.wenxuecity.com|- 文学城
     filter-patterns:
         - ^/.*/\d+.html

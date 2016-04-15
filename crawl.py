@@ -72,8 +72,38 @@ class Crawl(object):
         except AttributeError:
             return
 
+    def get_comments(self, soup):
+        try:
+            comments = []
+            usr_date = self.conf["article-comments"]["user-date"]
+            comment = self.conf["article-comments"]["comment"]
+
+            usr_date_tag = usr_date.get("tag", "")
+            usr_date_id = usr_date.get("id", "")
+            usr_date_class = usr_date.get("class", "")
+
+            comment_tag = comment.get("tag", "")
+            comment_id = comment.get("id", "")
+            comment_class = comment.get("class", "")
+
+            usr_date = soup.find_all(usr_date_tag, class_=usr_date_class, id=usr_date_id)
+            comment = soup.find_all(comment_tag, class_=comment_class, id=comment_id)
+            for _usr_date, _comment in zip(usr_date, comment):
+                comments.append(str(_usr_date) + str(_comment)) 
+
+                # _usr_date_text = re.sub("\t\s+|\n\s+", "", _usr_date.text)
+                # _comment_text = re.sub("\t\s+|\n\s+", "", _comment.text)
+                # comments.append("%s<br/>%s" % (_usr_date_text, _comment_text))
+            comments = "".join(comments)
+            comments = "<div class='comments'>\n" + comments + "\n</div>"
+            return comments
+        except AttributeError as e:
+            logging.warning("Fail to parse comments of page: %s -- %s" % (page, e))
+            return ""
+
     def get_content(self, soup, uri):
         content_ids = self.conf.get("article-page-content", [{}])
+
         for _id in content_ids:
             tag = _id.get("tag", "")
             cls = _id.get("class", "")
@@ -81,11 +111,16 @@ class Crawl(object):
             content = soup.find(tag, class_=cls, id=id)
             if content:
                 break
+
         self.remove_content_links(content)
         content_text = re.sub("\t\s+|\n\s+", "", content.text).strip()
         summary = content_text[:100] + "..."
+
         self.absolute_resources(content, uri)
-        return (summary, content.prettify())
+
+        comments = self.get_comments(soup)
+        content = content.prettify() + comments.decode("utf-8")
+        return (summary, content)
 
     def get_uripath(self, uri):
         _uri = uri.split("/")[:-1]
