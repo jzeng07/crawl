@@ -1,0 +1,14 @@
+<html>
+<head>
+    <title><%= title%></title>
+</head>
+
+<body>
+    <h1><%= title%></h1>
+    <ul>
+    <% for (var name in sites) { %>
+        <li><a href=/<%=name%>><%= sites[name] %></a></li>
+    <% } %>
+    </ul>
+</body>
+</html>

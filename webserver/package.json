@@ -1,0 +1,13 @@
+{
+  "name": "aggregate",
+  "description": "news aggregate",
+  "version": "0.0.1",
+  "private": true,
+  "script": {
+      "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "4.x",
+    "ejs": "*"
+  }
+}
