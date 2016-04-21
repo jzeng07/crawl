@@ -39,7 +39,27 @@ class Crawl(object):
 
         client = MongoClient("localhost:27017")
         self.db = client["mass"]
+
+        # A table store the fetched web names and their aliases
+        self.fetched_webs = self.db["fetched_webs"]
+        if not self.fetched_webs.find_one({"name": self.conf["name"]}):
+            self.fetched_webs.insert(
+                {"name": self.conf["name"], "alias": self.conf["alias"]})
         self.output = output
+        self._remove_old()
+
+    def _remove_old(self):
+        # if keep current articles only, remove all old records and files
+        keep_old = self.conf.get("keep-old", False)
+        if not keep_old:
+            coll = self.db[self.conf["name"]]
+            coll.remove({})
+
+            doc_root = os.path.join(
+                os.path.abspath(os.curdir), "docs/%s"%self.conf["name"])
+            if doc_root:
+                for file in os.listdir(doc_root):
+                    os.remove(os.path.join(doc_root, file))
 
     def _filter(self, str):
         patterns = self.conf["article-links-filter-patterns"]
@@ -65,6 +85,7 @@ class Crawl(object):
 
     def write_db(self, article):
         coll = self.db[self.conf["name"]]
+
         if coll.find_one({"pageid": article["pageid"]}):
             coll.replace_one({"pageid": article["pageid"]}, article)
         else:
@@ -131,10 +152,12 @@ class Crawl(object):
         soup.head.insert(1, title_tag)
         # soup.body.insert(1, content)
 
+        import pdb; pdb.set_trace()
         doc_root = os.path.join(
             os.path.abspath(os.curdir), "docs/%s"%self.conf["name"])
         if not os.path.exists(doc_root):
             os.makedirs(doc_root)
+
         with open(os.path.join(doc_root, "%s.html" % pageid), "w") as f:
             f.write(str(soup))
             f.write("<body>")

@@ -1,6 +1,7 @@
 wenxuecity:
     # general paramters
     name: wenxuecity
+    alias: 文学城
     root: http://www.wenxuecity.com/
     depth: 1
     summary-len: 100
@@ -41,6 +42,7 @@ wenxuecity:
 zhihudaily:
     # general paramters
     name: zhihudaily
+    alias: 知乎日报
     root: http://daily.zhihu.com/
     depth: 1
     summary-len: 100
@@ -67,6 +69,7 @@ zhihudaily:
 jianshu:
     # general paramters
     name: jianshu
+    alias: 简书
     root: http://www.jianshu.com/
     depth: 1
     summary-len: 100
@@ -92,6 +95,7 @@ jianshu:
 ftchinese:
     # general paramters
     name: ftchinese
+    alias: FT中文
     root: http://www.ftchinese.com/
     depth: 1
     summary-len: 100
