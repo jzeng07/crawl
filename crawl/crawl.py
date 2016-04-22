@@ -57,7 +57,7 @@ class Crawl(object):
 
             doc_root = os.path.join(
                 os.path.abspath(os.curdir), "docs/%s"%self.conf["name"])
-            if doc_root:
+            if os.path.exists(doc_root):
                 for file in os.listdir(doc_root):
                     os.remove(os.path.join(doc_root, file))
 
@@ -152,7 +152,6 @@ class Crawl(object):
         soup.head.insert(1, title_tag)
         # soup.body.insert(1, content)
 
-        import pdb; pdb.set_trace()
         doc_root = os.path.join(
             os.path.abspath(os.curdir), "docs/%s"%self.conf["name"])
         if not os.path.exists(doc_root):

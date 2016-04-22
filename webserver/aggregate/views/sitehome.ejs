@@ -1,0 +1,9 @@
+<% include header %>
+
+  <ul>
+    <% for(var i=0; i<articles.length; i++) { %>
+      <li><a href=<%= articles[i]['path'] %>><%= articles[i]['title'] %></a></li>
+    <% } %>
+  </ul>
+
+<% include footer %>

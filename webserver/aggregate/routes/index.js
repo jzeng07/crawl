@@ -1,24 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var Sites = require('../models/sites');
+var homepage = require('../models/home.js');
+var site = require('../models/site.js');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-    debugger;
-    sites = querySites(Sites);
-    res.render('index', { title: 'Express' });
-});
+router.get('/', homepage);
 
-function querySites(SitesModel, res) {
-    SitesModel.find(function(err, _sites, res) {
-        var sites = {};
-        for (var i=0; i<_sites.length; i++) {
-            sites['name'] = _sites[i]['name'];
-            sites['alias'] = _sites[i]['alias'];
-        }
-        console.log(sites);
-        res.send(sites);
-    });
-}
+/* GET article list of a site. */
+router.get('/:sitename', site.homepage);
+router.get('/:sitename/:pageid', site.article);
 
 module.exports = router;
