@@ -1,4 +1,4 @@
-var mongoose = require("./mongoose.js");
+var mongoose = require("models/mongoose.js");
 
 function homepage(req, res) {
     mongoose.sitemapModel.find(function(err, _sites) {

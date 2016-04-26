@@ -1,35 +1,35 @@
 var mongoose = require("mongoose");
-var mongoosejs = require("./mongoose.js");
-debugger;
-var home = require("./home.js")
+var mongoosejs = require("models/mongoose.js");
+var home = require("models/home.js")
 
 function homepage(req, res) {
     debugger;
     var sitename = req.params.sitename;
-    var siteModel = mongoose.model(sitename, mongoosejs.articleSchema, sitename)
+    var siteModel = mongoose.model(sitename, mongoosejs.articleSchema, sitename);
 
-    siteModel.find(function(err, _articles) {
-        debugger;
-        var sitemap = {
-            'zhihudaily': '知乎日报',
-            'jianshu': '简书',
-            'wenxuecity': '文学城'
-        };
-        var articles = [];
-        for (var i=0; i<_articles.length; i++) {
-            articles.push({
-                'path': sitename + "/" + _articles[i]['pageid'],
-                'title': _articles[i]['title'],
-                'summary': _articles[i]['summary'],
-            });
+    mongoosejs.sitemapModel.find(function(err, _sites) {
+        var sitemap = {};
+        for (var i=0; i<_sites.length; i++) {
+            sitemap[_sites[i]['name']] = _sites[i]['alias'];
         }
-        console.log(articles);
-        res.render('sitehome',
-            {
-                'title': sitemap[sitename],
-                'articles': articles
+    
+        siteModel.find(function(err, _articles) {
+            debugger;
+            var articles = [];
+            for (var i=0; i<_articles.length; i++) {
+                articles.push({
+                    'path': sitename + "/" + _articles[i]['pageid'],
+                    'title': _articles[i]['title'],
+                    'summary': _articles[i]['summary'],
+                });
             }
-        );
+            res.render('sitehome',
+                {
+                    'title': sitemap[sitename],
+                    'articles': articles
+                }
+            );
+        });
     });
 }
 

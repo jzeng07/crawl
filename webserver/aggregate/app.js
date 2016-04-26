@@ -1,4 +1,4 @@
-global.__base = __dirname + '/';
+require('app-module-path').addPath(__dirname + '/');
 
 var express = require('express');
 var path = require('path');
@@ -7,16 +7,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var mongoose = require('./models/mongoose.js');
+var routes = require('routes/index');
+var users = require('routes/users');
+var mongoose = require('models/mongoose.js');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-// app.set('view engine', 'ejs');
+// app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
