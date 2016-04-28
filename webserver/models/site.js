@@ -47,7 +47,7 @@ function article(req, res) {
         article = _articles[0];
         debugger;
         console.log("article is " + article);
-        res.render('article',
+        res.render('index',
             {
                 'title': article['title'],
                 'content': article['content']

@@ -8,6 +8,6 @@ router.get('/', homepage);
 
 /* GET article list of a site. */
 router.get('/:sitename', homepage);
-router.get('/:sitename/:pageid', site.article);
+router.get('/:sitename/:pageid', homepage);
 
 module.exports = router;
