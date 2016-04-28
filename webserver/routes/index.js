@@ -1,18 +1,13 @@
-// index.js
+var express = require('express');
+var router = express.Router();
+var homepage = require('models/home.js');
+var site = require('models/site.js');
 
-exports.index = function (req, res) {
-    res.render('index.ejs',
-        {"title": "Hello world",
-         "sites": {
-             "zhihudaily": "知乎日报",
-             "wenxuecity": "文学城",
-             "jianshu": "简书",
-             "ftchinese": "FT中文"
-         }
-        }
-    );
-}
+/* GET home page. */
+router.get('/', homepage);
 
-exports.zhihudaily = function (req, res) {
-    res.render('zhihudaily.ejs', {"title": "知乎日报"});
-}
+/* GET article list of a site. */
+router.get('/:sitename', homepage);
+router.get('/:sitename/:pageid', site.article);
+
+module.exports = router;
