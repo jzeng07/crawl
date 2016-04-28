@@ -2,6 +2,8 @@ var mongoose = require("mongoose");
 var mongoosejs = require("models/mongoose.js");
 
 function homepage(req, res) {
+    var sitename = req.params.sitename;
+
     mongoosejs.sitemapModel.find(function(err, _sites) {
         var sites = [];
         for (var i=0; i<_sites.length; i++) {
@@ -13,10 +15,12 @@ function homepage(req, res) {
 
         console.log(sites);
         var active_site = sites[0]['name'];
+        if (sitename != undefined) {
+            active_site = sitename;
+        }
 
         var siteModel = mongoose.model(active_site, mongoosejs.articleSchema, active_site);
         siteModel.find(function(err, _articles) {
-            debugger;
             var articles = [];
             for (var i=0; i<_articles.length; i++) {
                 articles.push({

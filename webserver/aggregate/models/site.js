@@ -46,6 +46,7 @@ function article(req, res) {
         }
         article = _articles[0];
         debugger;
+        console.log("article is " + article);
         res.render('article',
             {
                 'title': article['title'],

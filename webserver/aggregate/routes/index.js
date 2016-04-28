@@ -7,7 +7,7 @@ var site = require('models/site.js');
 router.get('/', homepage);
 
 /* GET article list of a site. */
-router.get('/:sitename', site.homepage);
+router.get('/:sitename', homepage);
 router.get('/:sitename/:pageid', site.article);
 
 module.exports = router;

@@ -115,10 +115,10 @@ class Crawl(object):
             usr_date = self.conf["article-comments"]["user-date"]
             comment = self.conf["article-comments"]["comment"]
 
-            usr_date_tag, usr_date_id, usr_date_class = \
-                self.fetch_conf(usr_date)
-            comment_tag, comment_id, comment_class = \
-                self.fetch_conf(comment)
+            usr_date_tag, usr_date_class, usr_date_id = \
+                self._fetch_conf(usr_date)
+            comment_tag, comment_class, comment_id = \
+                self._fetch_conf(comment)
 
             usr_date = soup.find_all(
                 usr_date_tag, class_=usr_date_class, id=usr_date_id)
@@ -127,8 +127,6 @@ class Crawl(object):
             for _usr_date, _comment in zip(usr_date, comment):
                 comments.append(str(_usr_date) + str(_comment))
 
-            comments = "".join(comments)
-            comments = "<div class='comments'>\n" + comments + "\n</div>"
             return comments
         except AttributeError as e:
             logging.warning(e)
@@ -145,7 +143,7 @@ class Crawl(object):
                 if re.search("^/", img["src"]):
                     img["src"] = urlparse.urljoin(self.root, img["src"])
 
-    def write_file(self, title, content_title, content, pageid):
+    def write_file(self, title, content, pageid):
         soup = bs4.BeautifulSoup(html.decode("utf-8"), "html5lib")
         title_tag = soup.new_tag("title")
         title_tag.string = title
@@ -160,7 +158,7 @@ class Crawl(object):
         with open(os.path.join(doc_root, "%s.html" % pageid), "w") as f:
             f.write(str(soup))
             f.write("<body>")
-            f.write("<h3>%s</h3>" % content_title.encode("utf-8"))
+            f.write("<h3>%s</h3>" % title.encode("utf-8"))
             f.write(content.encode("utf-8"))
             f.write("</body></html>")
 
@@ -182,12 +180,17 @@ class Crawl(object):
 
         self.remove_content_links(content)
         content_text = re.sub("\t\s+|\n\s+", "", content.text).strip()
-        summary = re.sub("\\n+", ". ", content.text[:100]) + "..."
+        summary = re.sub("\\n+", ". ", content.text[:self.conf["summary-len"]]) + "..."
 
         self.absolute_resources(content)
 
         comments = self.get_comments(soup)
-        content = content.prettify() + comments.decode("utf-8")
+        content = content.prettify()
+
+        comments = "".join(comments)
+        comments = "<div class='comments'>\n" + comments + "\n</div>"
+        content = content + comments.decode("utf-8")
+
         return (summary, content)
 
     def parse_content(self, soup):
@@ -207,8 +210,7 @@ class Crawl(object):
         content_title = content_container.find(
             cont_title_tag, class_=cont_title_cls, id=cont_title_id).text
 
-        summary, content = self.get_content(content_container)
-        return (content_title, summary, content)
+        return self.get_content(content_container)
 
     def parse_article(self, page):
         try:
@@ -223,21 +225,19 @@ class Crawl(object):
             timestamp = self.get_timestamp(soup)
             logging.info(timestamp)
 
-
-            content_title, summary, content_text = self.parse_content(soup)
+            summary, content_text = self.parse_content(soup)
             logging.info(summary)
 
             if self.output:
-                self.write_file(title, content_title, content_text, page_id)
+                self.write_file(title, content_text, page_id)
 
             article = {
                 "pageid": page_id,
                 "page": page,
                 "timestamp": timestamp,
                 "title": title,
-                "content-title": content_title,
                 "summary": summary,
-                "content": content_text
+                "content": content_text,
             }
             self.write_db(article)
         except AttributeError as e:
@@ -319,7 +319,11 @@ def main(argv):
             output = True
 
     if args:
-        sites = args
+        if "all" in args:
+            with open(config_file, "r") as f:
+                sites = yaml.load(f).keys()
+        else:
+            sites = args
     else:
         sites = ["zhihudaily"]
 
