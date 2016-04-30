@@ -37,7 +37,7 @@
     </style>
   </head>
 
-  <body ng-controller="articlesCtrl" ng-init="init('/zhihudaily')">
+  <body ng-controller="articlesCtrl" ng-init="go('wenxuecity')">
     <div class="container-top">
       <form class="navbar-form navbar-right" role="search">
         <div class="form-group input-group">
@@ -80,11 +80,11 @@
       <div class="row content">
         <div class="col-sm-2 sidenav">
           <ul class="nav nav-pills nav-stacked" ng-repeat="site in sites">
-              <li class="active"><a href={{site.name}}>{{site.alias}}</a></li>
+              <li class="active"><a href="" ng-click="go(site.name)">{{site.alias}}</a></li>
           </ul>
         </div>
-        <div class="col-md-7" ng-repeat="article in articles | filter:query">
-          <div class="row">
+        <div class="col-md-7">
+          <div class="row" ng-repeat="article in articles | filter:query" ng-show="showlist">
             <div class="col-sm-3">
               <div class="well">
                 <p>News's picture</p>
@@ -92,9 +92,13 @@
             </div>
             <div class="col-sm-9">
               <div class="well" id="n1">
-                  <p><a href={{article.path}}>{{article.title}}</a></p>
+                  <p><a href="" ng-click="read(article.path)">{{article.title}}</a></p>
               </div>
             </div>
+          </div>
+          <div class="content" ng-show="showcontent">
+            <h1>{{article.title}}</h1>
+            <p ng-bind-html="article.content" align="left"></p>
           </div>
         </div>
 
