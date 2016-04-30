@@ -1,9 +1,0 @@
-<% include header %>
-
-  <ul>
-    <% for(var i=0; i<sites.length; i++) { %>
-      <li><a href=<%= sites[i]['name'] %>><%= sites[i]['alias'] %></a></li>
-    <% } %>
-  </ul>
-
-<% include footer %>

@@ -8,9 +8,12 @@ function homepage(req, res) {
     var siteModel = mongoose.model(sitename, mongoosejs.articleSchema, sitename);
 
     mongoosejs.sitemapModel.find(function(err, _sites) {
-        var sitemap = {};
+        var sites = [];
         for (var i=0; i<_sites.length; i++) {
-            sitemap[_sites[i]['name']] = _sites[i]['alias'];
+            sites.push({
+                'name': _sites[i]['name'],
+                'alias': _sites[i]['alias']
+            });
         }
     
         siteModel.find(function(err, _articles) {
@@ -23,9 +26,9 @@ function homepage(req, res) {
                     'summary': _articles[i]['summary'],
                 });
             }
-            res.render('sitehome',
+            res.json(
                 {
-                    'title': sitemap[sitename],
+                    'sites': sites,
                     'articles': articles
                 }
             );
@@ -44,15 +47,19 @@ function article(req, res) {
         if (_articles.length > 1) {
             throw "Find multiple articles";
         }
-        article = _articles[0];
-        debugger;
-        console.log("article is " + article);
-        res.render('index',
-            {
-                'title': article['title'],
-                'content': article['content']
-            }
-        );
+        if (_articles) {
+            article = _articles[0];
+            debugger;
+            console.log("article is " + article);
+            res.json(
+                {
+                    'title': article.title,
+                    'content': article.content
+                }
+            );
+        } else {
+            res.send("Not found");
+        }
     });
 }
 
