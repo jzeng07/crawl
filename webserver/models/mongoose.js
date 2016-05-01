@@ -17,7 +17,8 @@ var articleSchema = mongoose.Schema({
     'summary': String,
     'content': String,
     'content-title': String,
-    'page': String
+    'page': String,
+    'image': String
 });
 
 

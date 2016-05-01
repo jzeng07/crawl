@@ -63,11 +63,6 @@ class Crawl(object):
             if os.path.exists(doc_root):
                 for file in os.listdir(doc_root):
                     os.remove(os.path.join(doc_root, file))
-            img_dir = os.path.join("../webserver/public/images", self.conf["name"])
-            if os.path.exists(img_dir):
-                for file in os.listdir(img_dir):
-                    os.remove(os.path.join(img_dir, file))
-
 
     def _filter(self, str):
         patterns = self.conf["article-links-filter-patterns"]
@@ -182,23 +177,20 @@ class Crawl(object):
         try:
             img_dir = "../webserver/public/images/"
 
-            if imgurl.startswith("/"):
-                imgurl = urlparse.urljoin(self.root, imgurl)
-
             resp = urllib2.urlopen(imgurl)
             img = Image.open(StringIO.StringIO(resp.read()))
+            import pdb; pdb.set_trace()
             img = img.resize((128, 128))
 
             img_path = os.path.join(img_dir, self.conf["name"])
-            if not os.path.exists(img_path):
-                os.mkdir(img_path)
+            if not os.path.exists(doc_root):
+                os.mkdir()
 
             filename = urlparse.urlparse(imgurl).path
-            filename = filename.split("/")[-1]
-            img.save(os.path.join(img_path, filename))
-            return "%s/%s" % (self.conf["name"], filename)
-        except Exception as e:
-            print e
+            filename = "%s%s" % (self.conf["name"], filename)
+            img.save(os.path.join(img_dir, filename))
+            return filename
+        except Exception:
             pass
 
     
@@ -211,15 +203,9 @@ class Crawl(object):
             if content:
                 break
         
-        imgs = soup.find_all('img')
-        img = None
-        for img in imgs:
-            if re.search("jpeg$|jpg$", img["src"]):
-                break
-
-        img_link = ""
+        img = soup.find('img')
         if img:
-            img_link = self.download_image(img['src'])
+            self.download_image(img['src'])
 
         self.remove_content_links(content)
         content_text = re.sub("\t\s+|\n\s+", "", content.text).strip()
@@ -234,7 +220,7 @@ class Crawl(object):
         comments = "<div class='comments'>\n" + comments + "\n</div>"
         content = content + comments.decode("utf-8")
 
-        return (summary, content, img_link)
+        return (summary, content)
 
     def parse_content(self, soup):
         article_content_containers = self.conf.get(
@@ -268,9 +254,7 @@ class Crawl(object):
             timestamp = self.get_timestamp(soup)
             logging.info(timestamp)
 
-            summary, content_text, content_img = self.parse_content(soup)
-            if not content_img:
-                content_img = "default.jpeg"
+            summary, content_text = self.parse_content(soup)
             logging.info(summary)
 
             if self.output:
@@ -283,7 +267,6 @@ class Crawl(object):
                 "title": title,
                 "summary": summary,
                 "content": content_text,
-                "image": content_img
             }
             self.write_db(article)
         except AttributeError as e:

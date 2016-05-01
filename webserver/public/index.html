@@ -76,7 +76,7 @@
       </div>
     </nav>
 
-    <div class="container-fluid text-center">
+    <div class="container-fluid text-left">
       <div class="row content">
         <div class="col-sm-2 sidenav">
           <ul class="nav nav-pills nav-stacked" ng-repeat="site in sites">
@@ -85,14 +85,9 @@
         </div>
         <div class="col-md-7">
           <div class="row" ng-repeat="article in articles | filter:query" ng-show="showlist">
-            <div class="col-sm-3">
-              <div class="well">
-                <p>News's picture</p>
-              </div>
-            </div>
-            <div class="col-sm-9">
+            <div class="col-sm-12">
               <div class="well" id="n1">
-                  <p><a href="" ng-click="read(article.path)">{{article.title}}</a></p>
+                  <p><img ng-src="images/{{article.image}}" height="48" width="48"><span>  </span></img><a href="" ng-click="read(article.path)">{{article.title}}</a></p>
               </div>
             </div>
           </div>
@@ -117,8 +112,7 @@
       </div>
     </div>
     <footer class="container-fluid text-center" >
-      <p>footer</p>
-
+      <p>Created by Lanying Zhu; Powered by nodejs+mongodb+vuejs</p>
     </footer>
 
   </body>

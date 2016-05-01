@@ -3,7 +3,6 @@ var mongoosejs = require("models/mongoose.js");
 var home = require("models/home.js")
 
 function homepage(req, res) {
-    debugger;
     var sitename = req.params.sitename;
     var siteModel = mongoose.model(sitename, mongoosejs.articleSchema, sitename);
 
@@ -17,13 +16,13 @@ function homepage(req, res) {
         }
     
         siteModel.find(function(err, _articles) {
-            debugger;
             var articles = [];
             for (var i=0; i<_articles.length; i++) {
                 articles.push({
                     'path': sitename + "/" + _articles[i]['pageid'],
                     'title': _articles[i]['title'],
                     'summary': _articles[i]['summary'],
+                    'image': _articles[i]['image']
                 });
             }
             res.json(
@@ -37,18 +36,17 @@ function homepage(req, res) {
 }
 
 function article(req, res) {
-    debugger;
     sitename = req.params.sitename;
     pageid = req.params.pageid;
     siteModel = mongoose.model(sitename, mongoosejs.articleSchema, sitename)
 
     siteModel.find({'pageid': pageid}, function(err, _articles) {
-        debugger;
         if (_articles.length > 1) {
             throw "Find multiple articles";
         }
-        if (_articles) {
+        if (_articles.length > 0) {
             article = _articles[0];
+            console.log(_articles)
             debugger;
             console.log("article is " + article);
             res.json(
