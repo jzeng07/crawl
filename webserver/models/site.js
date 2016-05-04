@@ -19,10 +19,11 @@ function homepage(req, res) {
             var articles = [];
             for (var i=0; i<_articles.length; i++) {
                 articles.push({
+                    'pageid': _articles[i].pageid,
                     'path': sitename + "/" + _articles[i]['pageid'],
                     'title': _articles[i]['title'],
-                    'summary': _articles[i]['summary'],
-                    'image': _articles[i]['image']
+                    'content': _articles[i]['content'],
+                    'image': _articles[i]['image'],
                 });
             }
             res.json(

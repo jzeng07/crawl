@@ -84,17 +84,25 @@
           </ul>
         </div>
         <div class="col-md-7">
-          <div class="row" ng-repeat="article in articles | filter:query" ng-show="showlist">
-            <div class="col-sm-12">
-              <div class="well" id="n1">
-                  <p><img ng-src="images/{{article.image}}" height="48" width="48"><span>  </span></img><a href="" ng-click="read(article.path)">{{article.title}}</a></p>
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default" ng-repeat="article in articles | filter:query" ng-show="showlist">
+              <div class="panel-heading" id="n1">
+                  <h4 class="panel-title">
+                    <img ng-src="images/{{article.image}}" height="48" width="48"><span>  </span></img>
+                    <a href="#content_{{article.pageid}}" data-toggle="collapse" data-parent="#accordion">{{article.title}}</a></p>
+                  </h4>
+              </div>
+              <div class="panel-collapse collapse" id="content_{{article.pageid}}">
+                <div class="panel-body" ng-bind-html="article.content"></div>
               </div>
             </div>
           </div>
+          <!--
           <div class="content" ng-show="showcontent">
             <h1>{{article.title}}</h1>
             <p ng-bind-html="article.content" align="left"></p>
           </div>
+          --!>
         </div>
 
         <div class="col-sm-3 well">

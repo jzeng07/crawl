@@ -5,6 +5,9 @@ aggregate.controller('articlesCtrl', function($scope, $http, $sce){
         console.log(path);
         $http.get(path).success(function(data) {
             console.log(data);
+            for (var i=0; i<data.articles.length; i++) {
+                data.articles[i].content = $sce.trustAsHtml(data.articles[i].content);
+            }
             $scope.sites = data.sites;
             $scope.articles = data.articles;
             $scope.showlist = true;
