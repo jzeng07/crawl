@@ -177,7 +177,7 @@ class Crawl(object):
         logging.info(title)
         return title
 
-    
+
     def download_image(self, imgurl):
         try:
             img_dir = "../webserver/public/images/"
@@ -191,7 +191,7 @@ class Crawl(object):
 
             img_path = os.path.join(img_dir, self.conf["name"])
             if not os.path.exists(img_path):
-                os.mkdir(img_path)
+                os.makedirs(img_path)
 
             filename = urlparse.urlparse(imgurl).path
             filename = filename.split("/")[-1]
@@ -201,7 +201,7 @@ class Crawl(object):
             print e
             pass
 
-    
+
     def get_content(self, soup):
         content_ids = self.conf.get("article-content", [])
 
@@ -210,12 +210,13 @@ class Crawl(object):
             content = soup.find(tag, class_=cls, id=id)
             if content:
                 break
-        
+
         imgs = soup.find_all('img')
-        img = None
         for img in imgs:
             if re.search("jpeg$|jpg$", img["src"]):
                 break
+        else:
+            img = None
 
         img_link = ""
         if img:
