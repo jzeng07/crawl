@@ -48,7 +48,6 @@ function article(req, res) {
         if (_articles.length > 0) {
             article = _articles[0];
             console.log(_articles)
-            debugger;
             console.log("article is " + article);
             res.json(
                 {
