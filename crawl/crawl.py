@@ -13,6 +13,7 @@ import logging
 import StringIO
 from pymongo import MongoClient
 from PIL import Image
+from threading import Thread
 
 format = "%(asctime)-15s %(message)s"
 logging.basicConfig(format=format, level=logging.DEBUG)
@@ -30,9 +31,10 @@ class NotImplementError(Exception):
     pass
 
 
-class Crawl(object):
+class Crawl(Thread):
 
     def __init__(self, webname, output=False, count=1024):
+        Thread.__init__(self)
         self.level = 0
         self.read_config(webname)
 
@@ -326,7 +328,7 @@ class Crawl(object):
         try:
             if self.stop():
                 self.level -= 1
-                self.parse_article(page)
+                Thread(target=self.parse_article, args=(page,)).start()
                 return
 
             content = urllib2.urlopen(page)
@@ -342,6 +344,12 @@ class Crawl(object):
                 self.crawl(link)
         except urllib2.HTTPError as e:
             logging.warning("Fail to open page: %s -- %s" % (page, e))
+
+    def run(self):
+        self.crawl(self.root)
+    
+    def join(self):
+        Thread.join(self)
 
 
 def print_help():
@@ -380,13 +388,17 @@ def main(argv):
     else:
         sites = ["zhihudaily"]
 
+    crawlers = []
     for site in sites:
         try:
             crawler = Crawl(site, output=output, count=count)
-            crawler.crawl(crawler.root)
+            crawler.start()
+            crawlers.append(crawler)
         except NotImplementError as e:
             logging.warning(e)
             pass
+
+    map(lambda x: x.join(), crawlers)
 
 
 if __name__ == "__main__":
