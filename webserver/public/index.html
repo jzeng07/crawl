@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="aggregate">
+  <head>
+    <title>FirstWeb</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
+    <script src="js/controllers.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <style>
+      /* Remove the navbar's default margin-bottom and rounded border */
+      .navbar {
+        margin-bottom: 0;
+        border-radius: 0;
+      }
+
+      .container-top {
+        height: 70px;
+        background-color: #25a8ff;
+        padding-top: 20px;
+        padding-left: 10px;
+      }
+
+      .sidenav {
+        background: #f1f1f1;
+      }
+
+      footer {
+        background: #555;
+        color: white;
+        padding-top: 10px;
+        height: 40px;
+      }
+    </style>
+  </head>
+
+  <body ng-controller="articlesCtrl" ng-init="go('wenxuecity')">
+    <div class="container-top">
+      <form class="navbar-form navbar-right" role="search">
+        <div class="form-group input-group">
+          <input type="text" class="form-control" placeholder="search.." ng-model="query">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">
+          <span class="glyphicon glyphicon-search"></span>
+        </button>
+          </span>
+        </div>
+      </form>
+      <h3><a class="Logo" href="index.html">Logo</a></h3>
+
+    </div>
+    <nav class="navbar navbar-inverse">
+      <div class="navbar-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Big News</a>
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span>Sign Up</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span>Login</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid text-left">
+      <div class="row content">
+        <div class="col-sm-2 sidenav">
+          <ul class="nav nav-pills nav-stacked" ng-repeat="site in sites">
+              <li class="active"><a href="" ng-click="go(site.name)">{{site.alias}}</a></li>
+          </ul>
+        </div>
+        <div class="col-md-7">
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default" ng-repeat="article in articles | filter:query" ng-show="showlist">
+              <div class="panel-heading" id="n1">
+                  <h4 class="panel-title">
+                    <img ng-src="images/{{article.image}}" height="48" width="48"><span>  </span></img>
+                    <a href="#content_{{article.pageid}}" data-toggle="collapse" data-parent="#accordion">{{article.title}}</a></p>
+                  </h4>
+              </div>
+              <div class="panel-collapse collapse" id="content_{{article.pageid}}">
+                <div class="panel-body" ng-bind-html="article.content"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-3 well">
+          <div class="well">
+            <p>ADS</p>
+          </div>
+          <div class="well">
+            <p>ADS</p>
+          </div>
+          <div class="well">
+            <p>ADS</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <footer class="container-fluid text-center" >
+      <p>Created by Lanying Zhu; Powered by nodejs+mongodb+vuejs</p>
+    </footer>
+
+  </body>
+</html>
