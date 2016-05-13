@@ -10,6 +10,7 @@ aggregate.controller('articlesCtrl', function($scope, $http, $sce){
             }
             $scope.sites = data.sites;
             $scope.articles = data.articles;
+            $scope.active = path;
             $scope.showlist = true;
             $scope.showcontent = false;
         });

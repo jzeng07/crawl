@@ -18,6 +18,8 @@ wenxuecity:
     article-content-container:
         - tag: div
           class: mainwrapper
+        - tag: div
+          id: content
     article-content-title:
         tag: h3
     article-content:

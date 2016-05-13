@@ -146,7 +146,7 @@ class Crawl(Thread):
         _uri = uri.split("/")[:-1]
         return "/".join(_uri)
 
-    def absolute_resources(self, content):
+    def adjust_resources(self, content):
         imgs = content.find_all("img")
         for img in imgs:
             if "src" in img.attrs:
@@ -186,10 +186,11 @@ class Crawl(Thread):
 
             if imgurl.startswith("/"):
                 imgurl = urlparse.urljoin(self.root, imgurl)
+            logging.info("downloading image: {}".format(imgurl))
 
             resp = urllib2.urlopen(imgurl)
             img = Image.open(StringIO.StringIO(resp.read()))
-            img = img.resize((128, 128))
+            # img = img.resize((128, 128))
 
             img_path = os.path.join(img_dir, self.conf["name"])
             if not os.path.exists(img_path):
@@ -200,7 +201,7 @@ class Crawl(Thread):
             img.save(os.path.join(img_path, filename))
             return "%s/%s" % (self.conf["name"], filename)
         except Exception as e:
-            print e
+            logging.exception(e)
             pass
 
 
@@ -215,6 +216,8 @@ class Crawl(Thread):
 
         imgs = soup.find_all('img')
         for img in imgs:
+            # patch for jianshu
+            img["src"] = img["src"].split("?")[0]
             if re.search("jpeg$|jpg$", img["src"]):
                 break
         else:
@@ -228,7 +231,7 @@ class Crawl(Thread):
         content_text = re.sub("\t\s+|\n\s+", "", content.text).strip()
         summary = re.sub("\\n+", "", content.text[:self.conf["summary-len"]]) + "..."
 
-        self.absolute_resources(content)
+        self.adjust_resources(content)
 
         comments = self.get_comments(soup)
         content = content.prettify()
@@ -245,16 +248,17 @@ class Crawl(Thread):
 
         content_container = None
         for container in article_content_containers:
+            print container
             ctner_tag, ctner_cls, ctner_id = self._fetch_conf(container)
             content_container = soup.find(
                 ctner_tag, class_=ctner_cls, id=ctner_id)
             if content_container:
                 break
 
-        cont_title_tag, cont_title_cls, cont_title_id = \
-            self._fetch_conf(self.conf["article-content-title"])
-        content_title = content_container.find(
-            cont_title_tag, class_=cont_title_cls, id=cont_title_id).text
+        # cont_title_tag, cont_title_cls, cont_title_id = \
+        #     self._fetch_conf(self.conf["article-content-title"])
+        # content_title = content_container.find(
+        #     cont_title_tag, class_=cont_title_cls, id=cont_title_id).text
 
         return self.get_content(content_container)
 
@@ -290,9 +294,9 @@ class Crawl(Thread):
             }
             self.write_db(article)
         except AttributeError as e:
-            logging.warning("Fail to parse page: %s -- %s" % (page, e))
+            logging.exception("Fail to parse page: %s -- %s" % (page, e))
         except urllib2.HTTPError as e:
-            logging.warning("Fail to open page: %s -- %s" % (page, e))
+            logging.exception("Fail to open page: %s -- %s" % (page, e))
 
     def parse_page(self, soup, **kwargs):
         links = []
@@ -308,10 +312,11 @@ class Crawl(Thread):
                 _links = content.find_all("a")
                 links.extend(_links)
             links = [x["href"] for x in links if "href" in x.attrs]
-            links = [urlparse.urlparse(x).path for x in links]
+            # links = [urlparse.urlparse(x).path for x in links]
             links = list(set(links))
 
-        return filter(self._filter, links)
+        links = filter(self._filter, links)
+        return links
 
     def read_config(self, website):
         with open(config_file, "r") as f:
@@ -343,11 +348,11 @@ class Crawl(Thread):
                 self.level += 1
                 self.crawl(link)
         except urllib2.HTTPError as e:
-            logging.warning("Fail to open page: %s -- %s" % (page, e))
+            logging.exception("Fail to open page: %s -- %s" % (page, e))
 
     def run(self):
         self.crawl(self.root)
-    
+
     def join(self):
         Thread.join(self)
 

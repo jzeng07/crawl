@@ -1,0 +1,67 @@
+/* Remove the navbar's default margin-bottom and rounded border */
+.navbar {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.container-top {
+  height: 70px;
+  background-color: #25a8ff;
+  padding-top: 20px;
+  padding-left: 10px;
+}
+
+.sidenav {
+  background: #f1f1f1;
+}
+
+footer {
+  background: #555;
+  color: white;
+  padding-top: 10px;
+  height: 40px;
+}
+
+.img-wrap {
+  position: relative;
+  max-height: 375px;
+  overflow: hidden;
+}
+
+.img-wrap img {
+    align: center;
+    margin: 0 auto 20px;
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    height:: auto;
+    max-height: 100%;
+}
+
+.img-wrap .headline-title {
+  margin: 20px 0;
+  bottom: 10px;
+  z-index: 1;
+  position: absolute;
+  color: #5ef;
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+}
+.headline-title {
+  margin: 20px 0 10px;
+  font-size: 24px;
+  line-height: 1.2em;
+  padding: 0 40px;
+  color: #222;
+}
+.article-content {
+  padding: 0 20px;
+}
+
+.article-content img {
+    margin: 0 auto 20px;
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    height:: auto;
+    max-height: 100%;
+}

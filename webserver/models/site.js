@@ -24,6 +24,7 @@ function homepage(req, res) {
                     'title': _articles[i]['title'],
                     'content': _articles[i]['content'],
                     'image': _articles[i]['image'],
+                    'page': _articles[i]['page'],
                 });
             }
             res.json(
@@ -52,7 +53,8 @@ function article(req, res) {
             res.json(
                 {
                     'title': article.title,
-                    'content': article.content
+                    'content': article.content,
+                    'page': articles.page,
                 }
             );
         } else {
