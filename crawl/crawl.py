@@ -214,8 +214,9 @@ class Crawl(Thread):
                 break
 
         exclude_tag = self.conf.get("article-exclude-tag", "")
-        exclude_section = content.find(exclude_tag)
-        exclude_section.extract()
+        if exclude_tag:
+            exclude_section = content.find(exclude_tag)
+            exclude_section.extract()
 
         imgs = soup.find_all('img')
         for img in imgs:

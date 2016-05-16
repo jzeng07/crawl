@@ -81,8 +81,7 @@ jianshu:
         - tag: div
           id: list-container
     article-links-filter-patterns:
-        - ^/p/\w+\d+
-        - ^http://.*.jianshu.com/.*/\w+\d+
+        - ^/p/((?!#comment).)*$
 
     # parameters to parse article content
     article-content-container:
