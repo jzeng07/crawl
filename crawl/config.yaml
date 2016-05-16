@@ -94,6 +94,7 @@ jianshu:
     article-content:
         - tag: div
           class: show-content
+
 ftchinese:
     # general paramters
     name: ftchinese
@@ -124,3 +125,42 @@ ftchinese:
     article-timestamp:
         - tag: a
           class: storytime
+
+economist:
+    # general paramters
+    name: economist
+    alias: Ecnomist
+    root: http://www.economist.com/
+    depth: 1
+    rount: 20
+    summary-len: 100
+
+    headers:
+        Host: www.economist.com
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+        User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36)
+
+    # parameters to parse home page to get article links 
+    home-page-content:
+        - tag: div
+          id: page
+          class: container
+    article-links-filter-patterns:
+        - ^/news/((?!\?).)*$
+
+    # parameters to parse article content
+    article-content-container:
+        - tag: div
+          id: page
+          class: container
+    article-content-title:
+        tag: h3
+        id: headline
+    article-content:
+        - tag: div
+          class: main-content
+    article-timestamp:
+        - tag: time 
+          class: date-created
+    article-exclude-tag: aside
+ 

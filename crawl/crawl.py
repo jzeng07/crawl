@@ -204,7 +204,6 @@ class Crawl(Thread):
             logging.exception(e)
             pass
 
-
     def get_content(self, soup):
         content_ids = self.conf.get("article-content", [])
 
@@ -213,6 +212,10 @@ class Crawl(Thread):
             content = soup.find(tag, class_=cls, id=id)
             if content:
                 break
+
+        exclude_tag = self.conf.get("article-exclude-tag", "")
+        exclude_section = content.find(exclude_tag)
+        exclude_section.extract()
 
         imgs = soup.find_all('img')
         for img in imgs:
@@ -248,7 +251,6 @@ class Crawl(Thread):
 
         content_container = None
         for container in article_content_containers:
-            print container
             ctner_tag, ctner_cls, ctner_id = self._fetch_conf(container)
             content_container = soup.find(
                 ctner_tag, class_=ctner_cls, id=ctner_id)
@@ -267,7 +269,12 @@ class Crawl(Thread):
             logging.info("open %s" % page)
             page_id = self.get_pageid(page)
 
-            content = urllib2.urlopen(page)
+
+            opener = urllib2.build_opener()
+            headers = self.conf.get("headers", {})
+            opener.addheaders = headers.items()
+
+            content = opener.open(page)
             soup = bs4.BeautifulSoup(content, "html5lib")
 
             title = self.parse_head_title(soup)
@@ -336,7 +343,11 @@ class Crawl(Thread):
                 Thread(target=self.parse_article, args=(page,)).start()
                 return
 
-            content = urllib2.urlopen(page)
+            opener = urllib2.build_opener()
+            headers = self.conf.get("headers", {})
+            opener.addheaders = headers.items()
+
+            content = opener.open(page)
             soup = bs4.BeautifulSoup(content, "html5lib")
             links = self.parse_page(soup)
             count = min(self.count, len(links))
