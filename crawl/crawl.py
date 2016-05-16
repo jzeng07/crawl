@@ -15,8 +15,20 @@ from pymongo import MongoClient
 from PIL import Image
 from threading import Thread
 
-format = "%(asctime)-15s %(message)s"
-logging.basicConfig(format=format, level=logging.DEBUG)
+LOGFILE = "crawl.log"
+
+logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s] %(message)s")
+rootLogger = logging.getLogger()
+rootLogger.setLevel(logging.DEBUG)
+
+fileHandler = logging.FileHandler(LOGFILE)
+fileHandler.setFormatter(logFormatter)
+rootLogger.addHandler(fileHandler)
+
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(logFormatter)
+rootLogger.addHandler(consoleHandler)
+
 
 config_file = "config.yaml"
 
@@ -35,6 +47,7 @@ class Crawl(Thread):
 
     def __init__(self, webname, output=False, count=1024):
         Thread.__init__(self)
+        self.name = webname
         self.level = 0
         self.read_config(webname)
 
@@ -216,7 +229,8 @@ class Crawl(Thread):
         exclude_tag = self.conf.get("article-exclude-tag", "")
         if exclude_tag:
             exclude_section = content.find(exclude_tag)
-            exclude_section.extract()
+            if exclude_section:
+                exclude_section.extract()
 
         imgs = soup.find_all('img')
         for img in imgs:
@@ -335,13 +349,14 @@ class Crawl(Thread):
             raise NotImplementError(
                 "The website '%s' crawler is NOT implemented yet, SKIP it" % website)
 
-    def crawl(self, page):
+    def crawl(self, page, idx=0):
         if not self.conf:
             return
         try:
             if self.stop():
                 self.level -= 1
-                Thread(target=self.parse_article, args=(page,)).start()
+                threadname = "{0}-{1}".format(self.name, idx)
+                Thread(target=self.parse_article, name=threadname, args=(page,)).start()
                 return
 
             opener = urllib2.build_opener()
@@ -354,11 +369,11 @@ class Crawl(Thread):
             count = min(self.count, len(links))
             links = links[:count]
 
-            for link in links:
+            for idx, link in enumerate(links):
                 if not re.search("^http", link):
                     link = urlparse.urljoin(page, link)
                 self.level += 1
-                self.crawl(link)
+                self.crawl(link, idx=idx)
         except urllib2.HTTPError as e:
             logging.exception("Fail to open page: %s -- %s" % (page, e))
 
