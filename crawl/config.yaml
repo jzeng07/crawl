@@ -100,7 +100,7 @@ ftchinese:
     alias: FT中文
     root: http://www.ftchinese.com/
     depth: 1
-    rount: 20
+    count: 20
     summary-len: 100
 
     # parameters to parse home page to get article links 
@@ -128,10 +128,9 @@ ftchinese:
 economist:
     # general paramters
     name: economist
-    alias: Ecnomist
+    alias: 经济学人
     root: http://www.economist.com/
     depth: 1
-    rount: 20
     summary-len: 100
 
     headers:
@@ -162,4 +161,42 @@ economist:
         - tag: time 
           class: date-created
     article-exclude-tag: aside
+ 
+voanews:
+    # general paramters
+    name: voanews
+    alias: 美国之音
+    root: http://www.voanews.com/
+    depth: 1
+    summary-len: 100
+
+    #headers:
+    #    Host: www.economist.com
+    #    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+    #    User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36)
+
+    # parameters to parse home page to get article links 
+    home-page-content:
+        - tag: div
+          class: columns
+    article-links-filter-patterns:
+        - ^/content/.*.html$
+        - ^http://www.voanews.com/content/.*.html$
+
+    # parameters to parse article content
+    article-content-container:
+        - tag: div
+          id: article
+          class: middle_content
+    article-content-title:
+        tag: h1
+    article-content:
+        - tag: div
+          class: articleContent
+    article-timestamp:
+        - tag: p
+          class: article_date
+    article-exclude-tag:
+        - tag: div
+          class: articleLeftContainer
  
